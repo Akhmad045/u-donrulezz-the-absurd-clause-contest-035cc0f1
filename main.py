@@ -37,6 +37,8 @@ def gate(text: str) -> list:
         problems.append("leading or trailing whitespace")
     if "\n" in text or "\r" in text or "\t" in text:
         problems.append("must be a single line with no control characters")
+    if any(ord(ch) < 32 or ord(ch) == 127 for ch in text):
+        problems.append("control characters are not allowed")
     return problems
 
 
@@ -71,6 +73,7 @@ def self_test() -> int:
     probes = [
         ("", False), ("   ", False), ("x" * 201, False),
         ("two\nlines", False), (" padded ", False),
+        ("tab\there", False), ("bell\x07", False),
         ("x", True), ("y" * 200, True),
     ]
     for probe, should_pass in probes:
